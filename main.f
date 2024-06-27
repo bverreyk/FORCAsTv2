@@ -1319,8 +1319,8 @@ c            vc(lno) = 1.2*vc(lno)
       DOUBLE PRECISION PI,  R0,  R1,   TCONV
       DOUBLE PRECISION XL
 !      parameter (nlevel=40,nsoil=15)
-!      common/imp/alpha,beta
-      common/konst/p0,aaa,bbb,ccc,ddd,ak,r0,r1,grav,cp,xl,tconv
+      common/imp/alpha,beta
+      common/konst/pi,p0,aaa,bbb,ccc,ddd,ak,r0,r1,grav,cp,xl,tconv
 !
 !c       parameters for the crank-nicolson scheme (alpha+beta=2.)
       data alpha/2.0/,beta/0.0/
@@ -1803,11 +1803,11 @@ c ka - added next lines to find correct levels for the observations
 !ka - added for sonics data; start of inserted lines
       write(06,'(/,x,"Above canopy observation height (m):",f8.2)') 
      &   zobstow
-      write(06,'(,x,"Model level and mid-point height (m):",i8,f8.2)') 
+      write(06,'(/,x,"Model level and mid-point height (m):",i8,f8.2)') 
      &   levobstow,zmodtow
       write(06,'(/,x,"In-canopy observation height (m):",f8.2)')
      &   zobscpy
-      write(06,'(,x,"Model level and mid-point height (m):",i8,f8.2)') 
+      write(06,'(/,x,"Model level and mid-point height (m):",i8,f8.2)') 
      &   levobscpy,zmodcpy
       write(06,'(/,x,"Model level for KH smoothing:",i8)')
      &   levmxd
