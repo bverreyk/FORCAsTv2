@@ -7,12 +7,29 @@
 RM_LIST = $(OBJS)
 
 # Targets
+# original
+# FC      = pgf90
+# FC      = gcc
+FC = ifort
 
-FC      = pgf90
 # normal FLAGS
 # FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee 
 # sometimes used for run-time checking of array index output bounds
-FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee -Mdclchk
+# FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee -Mdclchk
+
+# FLAGS gcc
+# -Kieee = strict compliance with IEEE 754 -> -frounding-math -fsignaling-nans (Full compliance in GCC)
+# -Mpreprocess = cpp (invoke C preprocessor)
+# -fast optimizes runtime but less trustworthy, O3 is considered a better option 
+# -pc 64 = double precision
+# FLAGS = -c -cpp -O3 -pc 64 -frounding-math -fsignaling-nans
+
+# FLAGS ifort
+# normal FLAGS
+# FLAGS = -c -fpp -O -pc 64 -mieee-fp
+# debuggin FLAGS
+FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp 
+
 
 # Suffix rules and commands
 
