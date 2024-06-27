@@ -421,7 +421,7 @@ CONTAINS
       REAL(KIND=dp) TEMP 
         MO = 7.33853E+21/TEMP
         K1 = 3.08E-34*EXP(2798.2/TEMP)
-        K2 = 2.59E-54*EXP(3180.7/TEMP)
+        K2 = 2.59E-54_8*EXP(3180.7/TEMP)
         K32  = 3.23E+33/TEMP/60./TEMP*(K1 + K2*MO)
       RETURN
       END
