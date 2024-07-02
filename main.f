@@ -306,6 +306,14 @@
 
       integer ii
 
+
+      ! bwdv add switches to test different components
+      logical sw_newc,sw_advect,sw_sourcest,sw_sinks,sw_chem
+      sw_advect = .true.    ! Run the advect subroutine in sources.f?
+      sw_newc = .true.      ! Run the newc subroutine in transp.f? (Turbulent transport)
+      sw_sourcest = .True.  ! Run the sourcest subroutine in sources.f?
+      sw_sinks = .True.     ! Run the sinks subroutine in sources.f?
+      sw_chem = .True.      ! Updated vcp in main.f?
       do k=1,3
        fbeam(k)=0.
       enddo
@@ -779,11 +787,13 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
 !
 ! ka - isort no longer required as emission factors read from inputn
 !**********************************************************************************************************************!
-      call sourcest(vcp,lprin,deltim,tstamp)
+      if (sw_sourcest) call sourcest(vcp,lprin,deltim,tstamp)
+
 !**********************************************************************************************************************!
 ! Sinks due to deposition
 !**********************************************************************************************************************!
-      call sinks(vcp,akh,lprin,tstamp,ustarb)
+      if (sw_sinks) call sinks(vcp,akh,lprin,tstamp,ustarb)
+
 !**********************************************************************************************************************!
 !
 ! Advection
@@ -795,8 +805,8 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
 ! remove and replace with SC's scheme or version thereof
 !
 !**********************************************************************************************************************!
-       call advect(l30,itime,vg,vcp,tstamp)
-      
+      if (sw_advect) call advect(l30,itime,vg,vcp,tstamp)
+
 !**********************************************************************************************************************!
 !
 ! The R factor correction by Makar et al. 1999
@@ -873,7 +883,7 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
       if (l30) read (5093, *) timin, alwc !shc aerosol water content [=] microgram/m3
       if (l30) read (5094, *) timin, vset !shc setting velocity [=] m/s
 
-      call newc(akh,vcp,vcnc,vset) 
+      if (sw_newc) call newc(akh,vcp,vcnc,vset) 
 
       ! Now move on to calculate the new temperature profile 
       call newt(akh)
@@ -1136,10 +1146,11 @@ c            vc(lno) = 1.2*vc(lno)
            dtl=dmin1(dtl,dtlast)
          endif
 
-         do jspec=1,nspec
-            vcp(lev,jspec)=max(dble(vc(jspec)),0.d0) !shc "0.0"->"0.d0
-         enddo
-
+         if (sw_chem) then
+           do jspec=1,nspec
+             vcp(lev,jspec)=max(dble(vc(jspec)),0.d0) !shc "0.0"->"0.d0
+           enddo
+         endif
            
            
 !**********************************************************************
@@ -1161,10 +1172,12 @@ c            vc(lno) = 1.2*vc(lno)
          call call_mpmpo(tstamp,deltim,lev, z(lev),boxcacm, tt,
      &       parcni,parcno, relh(k), depr, alwc, is_call_mpmpo) 
          ! pass updated boxcacm to CACHE
-         do jspec=1,nspec
-            vcp(lev,jspec) = boxcacm(jspec)
-         enddo
-         
+         if (sw_chem) then
+           do jspec=1,nspec
+             vcp(lev,jspec) = boxcacm(jspec)
+           enddo
+         endif 
+
          ! pass updated particle conc. to CACHE
          do jspec=1,nmpmpo
             vcnc(lev, jspec)=max(parcno(jspec), 0.d0)
@@ -1313,17 +1326,17 @@ c            vc(lno) = 1.2*vc(lno)
 !! ****************************************************************
 ! 
 !      INTEGER NLEVEL, NSOIL
-      DOUBLE PRECISION ALPHA, BETA
+!      DOUBLE PRECISION ALPHA, BETA
       DOUBLE PRECISION AAA, AK,  BBB,  CCC
       DOUBLE PRECISION CP,  DDD, GRAV, P0
-      DOUBLE PRECISION PI,  R0,  R1,   TCONV
+      DOUBLE PRECISION R0,  R1,   TCONV
       DOUBLE PRECISION XL
 !      parameter (nlevel=40,nsoil=15)
-      common/imp/alpha,beta
-      common/konst/pi,p0,aaa,bbb,ccc,ddd,ak,r0,r1,grav,cp,xl,tconv
+!      common/imp/alpha,beta
+      common/konst/p0,aaa,bbb,ccc,ddd,ak,r0,r1,grav,cp,xl,tconv
 !
 !c       parameters for the crank-nicolson scheme (alpha+beta=2.)
-      data alpha/2.0/,beta/0.0/
+!      data alpha/2.0/,beta/0.0/
 !c       miscellaneous parameters
       data p0/1000.00/,aaa/1.809567/,
      & bbb/17.269388/,ccc/4717.3061/,ddd/35.86/,
