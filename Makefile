@@ -9,8 +9,8 @@ RM_LIST = $(OBJS)
 # Targets
 # original
 # FC      = pgf90
-# FC      = gcc
-FC = ifort
+FC      = gfortran
+# FC = ifort
 
 # normal FLAGS
 # FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee 
@@ -21,14 +21,16 @@ FC = ifort
 # -Kieee = strict compliance with IEEE 754 -> -frounding-math -fsignaling-nans (Full compliance in GCC)
 # -Mpreprocess = cpp (invoke C preprocessor)
 # -fast optimizes runtime but less trustworthy, O3 is considered a better option 
-# -pc 64 = double precision
-# FLAGS = -c -cpp -O3 -pc 64 -frounding-math -fsignaling-nans
+# -pc 64 = -fdefault-real-8 -fdefault-double-8 (double precision floating point operations_
+# Add ffree-line-length-132 to catch long lines in module_parameters_ddw.f90 
+# Add -fno-align-commons
+FLAGS = -c -cpp -O2 -fdefault-real-8 -fdefault-double-8 -frounding-math -fsignaling-nans -ffree-line-length-256 -fno-align-commons
 
 # FLAGS ifort
 # normal FLAGS
 # FLAGS = -c -fpp -O -pc 64 -mieee-fp
 # debuggin FLAGS
-FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp 
+# FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp 
 
 
 # Suffix rules and commands
@@ -36,16 +38,16 @@ FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp
 .SUFFIXES : .f .f90 .F .o .mod
 
 .f.o :
-	$(FC) -c $(FLAGS) $<
+	$(FC) $(FLAGS) $<
 
 .f90.mod:
-	$(FC) $(FLAGS) -c $<
+	$(FC) $(FLAGS) $<
 
 .f90.o :
-	$(FC) -c $(FLAGS) $<
+	$(FC) $(FLAGS) $<
 
 .F.o   :
-	$(FC) -c $(FLAGS) $<
+	$(FC) $(FLAGS) $<
 
 OBJS= cacm3_Precision.o \
       cacm3_Parameters.o\
@@ -77,19 +79,19 @@ $(EXE):	$(OBJS)
 	$(FC) -o $@   $(OBJS)
 
 main.o : main.f
-	$(FC) $(FLAGS)  -c main.f
+	$(FC) $(FLAGS)   main.f
 save.o : save.f
-	$(FC) $(FLAGS)   -c save.f
+	$(FC) $(FLAGS)   save.f
 plant.o : plant.f
-	$(FC) $(FLAGS)   -c plant.f
+	$(FC) $(FLAGS)   plant.f
 transp.o : transp.f
-	$(FC) $(FLAGS)   -c transp.f
+	$(FC) $(FLAGS)   transp.f
 soil.o : soil.f
-	$(FC) $(FLAGS)   -c soil.f
+	$(FC) $(FLAGS)   soil.f
 sources.o : sources.f
-	$(FC) $(FLAGS)   -c sources.f
+	$(FC) $(FLAGS)   sources.f
 radia.o : radia.f
-	$(FC) $(FLAGS)   -c radia.f
+	$(FC) $(FLAGS)   radia.f
 module_parameters_ddw.o : module_parameters_ddw.f90 
 	$(FC) $(FLAGS)    module_parameters_ddw.f90
 module_wkppc_constants.o : module_wkppc_constants.f90 

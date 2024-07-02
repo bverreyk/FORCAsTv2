@@ -1,7 +1,7 @@
 204 2016               (jday iyear)  !22 Jul 2016
 45.559 84.714 84.714   (LAT  LONG  STD LONG)  !STD LONG is 60 plus 15 for daylight saving time - but no daylight saving applied to input file times
 0  0                    (ichem, impmpo) !chemistry mechanism switch: 0 CACM, 1 RACM-MIM+MT, MPMPO switch: 0 off, 1 on
-22.5 6.0  8.0 18.0 0.277     (hcpy,htr,levhtr,levcpy,del) !NB not all combinations work ...
+22.5 6.0  8 18 0.277     (hcpy,htr,levhtr,levcpy,del) !NB not all combinations work ...
 2  36.0  21.0  200.0  (isonics,zobstow,zobstcpytop,zobstcpymid,zmxd) !isonics=1 or 2, NB if only 1 sonic then use same value for zobstow and zobscpy
  3.80 0.08            (tlai,sizelf)  !tlai depends on jday
 0.15 0.08 0.1 0.1 0.3 0.2 0.3 0.4 1.2 0.8    (df) !  lai fractions in canopy layers: Parker, 1999: 0.10 0.02 0.05 0.03 0.03 0.05 0.09 0.12 0.18 0.33; Teske, 2001: 0.14 0.05 0.06 0.08 0.10 0.11 0.13 0.13 0.11 0.09; orig. 0.15  0.08  0.1  0.1  0.3  0.2  0.3  0.4  1.2  0.8 

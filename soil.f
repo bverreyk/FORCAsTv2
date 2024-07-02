@@ -199,8 +199,8 @@ c
 
       if(eta1.gt.etamax) eta1=etamax
 
-      call icsevu(sep,spp,isp,cpsi,icp,eta1,psi,1,ier1)
-      call dcsevu(sep,spp,isp,cpsi,icp,eta1,psieta,1,ier2)
+      call icsevu(sep,spp,isp,cpsi,icp,[eta1],[psi],1,ier1)
+      call dcsevu(sep,spp,isp,cpsi,icp,[eta1],[psieta],1,ier2)
       psi=-10.**psi
       psieta=2.3026*psi*psieta
       p21=610.7*exp(17.1536*(tb1-273.15)/(tb1-38.33))
