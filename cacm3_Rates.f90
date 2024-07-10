@@ -398,7 +398,7 @@ CONTAINS
       END
       
       
-      REAL*8 FUNCTION K31()
+      REAL*8 FUNCTION K31(TEMP)
       use cacm3_Parameters
 !      use cacm3_Global
 
@@ -413,7 +413,7 @@ CONTAINS
       END
       
 
-      REAL*8 FUNCTION K32()
+      REAL*8 FUNCTION K32(TEMP)
       use cacm3_Parameters
 !      use cacm3_Global
 
@@ -1854,8 +1854,8 @@ SUBROUTINE Update_RCONST ( &
   RCONST(28) = (K28(TEMP))
   RCONST(29) = (AR(1.5E-12,0.0,362.4,TEMP))
   RCONST(30) = (AR(1.4E-14,0.0,-598.9,TEMP))
-  RCONST(31) = (K31())
-  RCONST(32) = (K32())
+  RCONST(31) = (K31(TEMP))
+  RCONST(32) = (K32(TEMP))
   RCONST(33) = (AR(4.0E-12,0.0,0.0,TEMP))
   RCONST(34) = (AR(8.0E-12,0.0,-2058.4,TEMP))
   RCONST(35) = (AR2(4.1E-31,3.3,2.0E-12,0.0,0.45,TEMP))
