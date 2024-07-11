@@ -7,15 +7,15 @@
 RM_LIST = $(OBJS)
 
 # Targets
-# original
-# FC      = pgf90
-FC      = gfortran
-# FC = ifort
+# Fortran Compiler
+# FC = pgf90
+# FC = gfortran
+FC = ifort
 
 # normal FLAGS
-# FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee 
+PG_FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee 
 # sometimes used for run-time checking of array index output bounds
-# FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee -Mdclchk
+# PG_FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee -Mdclchk
 
 # FLAGS gnu
 # -Kieee = strict compliance with IEEE 754 -> -frounding-math -fsignaling-nans (Full compliance in GCC)
@@ -24,19 +24,28 @@ FC      = gfortran
 # -pc 64 = -fdefault-real-8 -fdefault-double-8 (double precision floating point operations_
 # Add ffree-line-length-132 to catch long lines in module_parameters_ddw.f90 
 # Add -fno-align-commons
-# FLAGS = -c -cpp -O2 -fdefault-real-8 -fdefault-double-8 -frounding-math -fsignaling-nans -ffree-line-length-256 -fno-align-commons -check all
+# GNU_FLAGS = -c -cpp -O2 -fdefault-real-8 -fdefault-double-8 -frounding-math -fsignaling-nans -ffree-line-length-256 -fno-align-commons -check all
 # debug flags - gdb
-FLAGS = -c -g -cpp -O2 -fdefault-real-8 -fdefault-double-8 -frounding-math -fsignaling-nans -ffree-line-length-256 -fno-align-commons
+GNU_FLAGS = -c -g -cpp -O2 -fdefault-real-8 -fdefault-double-8 -frounding-math -fsignaling-nans -ffree-line-length-256 -fno-align-commons
 
 
 # FLAGS ifort
 # normal FLAGS
-# FLAGS = -c -fpp -O -pc 64 -mieee-fp
+# INTEL_FLAGS = -c -fpp -O -pc 64 -mieee-fp
 # debuggin FLAGS
-# FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp 
+INTEL_FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp 
 # Additional flag to check additional issues
-# FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp -check all
+# INTEL_FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp -check all
 
+ifeq ($(FC), pgf90)
+	FLAGS = ${PG_FLAGS}
+endif
+ifeq ($(FC), fortran)
+	FLAGS = ${GNU_FLAGS}
+endif
+ifeq ($(FC), ifort)
+	FLAGS = ${INTEL_FLAGS}
+endif
 
 # Suffix rules and commands
 
