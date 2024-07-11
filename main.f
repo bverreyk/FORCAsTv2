@@ -347,8 +347,9 @@
       deltim= 1.*60.                       ! Time step in seconds
       ntimes= 60.*60./deltim * hours     ! Number of time steps (48 hours)
 
-      ptime = timloc+dpt                 ! Next print time step in hours
       dpt= 30./60.                       ! print frequency in hours
+      ptime = timloc                     ! Next print time step in hour
+                                         ! first print time is start
 
 !**********************************************************************************************************************!
 !
@@ -365,6 +366,7 @@
 !
 !**********************************************************************************************************************!
       call init(vcp,phot1,emiss,wind,rlat,clump,ustara,dpt,ichem,impmpo)
+      
       do i=1, nlev
          akh(i)=0.1
       enddo
@@ -1287,9 +1289,9 @@ c            vc(lno) = 1.2*vc(lno)
 
       if(lprin) then
        if(timloc.ge.24.) then
-        ptime=ptime-24.
+         ptime=ptime-24.
        endif
-        ptime=ptime+dpt-1.e-11
+       ptime=ptime+dpt-1.e-11 ! set next ptime
       endif
 
       tstart=tstart+deltim
@@ -1791,6 +1793,7 @@ c ka - added for sonics data; one line in order to identify the correct level fo
       zbot(1)=0.d0       !ka - added for observation levels
       zflgt=.true.
       zflgc=.true.
+      zflgm=.true.
 c ka - added next lines to find correct levels for the observations
       do k=40,1,-1
        if ((zobstow.gt.zbot(k)).and.(zflgt)) then
@@ -1973,8 +1976,10 @@ c and set photolysis frequencies for a zenith angle of zero
 c#############################################################
       xx=0.01    ! parameter for height "correction" - default
       
-      do i=1,nspec
-         vcp(lev,i)=0.
+      do lev=1, nlev
+         do i=1,nspec
+             vcp(lev,i)=0.
+         end do
       enddo
       
       do lev=1,nlev
