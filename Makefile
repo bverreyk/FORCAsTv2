@@ -9,8 +9,8 @@ RM_LIST = $(OBJS)
 # Targets
 # Fortran Compiler
 # FC = pgf90
-# FC = gfortran
-FC = ifort
+FC = gfortran
+# FC = ifort
 
 # normal FLAGS
 PG_FLAGS = -c -Mpreprocess -O -fast -pc 64 -Kieee 
@@ -40,7 +40,7 @@ INTEL_FLAGS = -c -g -fpp -O0 -pc64 -mieee-fp
 ifeq ($(FC), pgf90)
 	FLAGS = ${PG_FLAGS}
 endif
-ifeq ($(FC), fortran)
+ifeq ($(FC), gfortran)
 	FLAGS = ${GNU_FLAGS}
 endif
 ifeq ($(FC), ifort)
