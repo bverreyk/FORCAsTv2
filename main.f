@@ -1578,7 +1578,7 @@ c ##############################################################
       open(unit=322, file='out/gprd.out',status='unknown')
 
 !      open(unit=315,file='out/cacm_flux.out',status='unknown')   !ka - added canopy-top fluxes
-!      open(unit=317,file='out/cacm_zmix.out',status='unknown')   !ka - added vertical transport
+      open(unit=317,file='out/cacm_zmix.out',status='unknown')   !ka - added vertical transport
 !      open(unit=32, file='out/cacm_emis.out',status='unknown')
 !      open(unit=33, file='out/cacm_depn.out',status='unknown')
 !      open(unit=335,file='cacm_vdep.out',status='unknown')
@@ -1619,7 +1619,7 @@ c ##############################################################
 c Read parameters from file inputn - modify to be site-specific
 c ##############################################################
 
-      open(unit=15,file='inputn_07222016',status='old')
+      open(unit=15,file='inputn',status='old')
  
       read(15,*) jday,iyear                      ! ##### Start day and year
       icumdy=jday
@@ -2125,10 +2125,10 @@ c################################################
 
 c Calculate soil grids
 c 
-      read(15,*) (zs(i),i=1,6)             ! ######### soil layers
+      read(15,*) (zs(i),i=1,5)             ! ######### soil layers
       write(06,'(/,x,"Soil levels (m):")')
-      write(06,'(x,6i7)') (ii,ii=1,6)
-      write(06,'(x,6f7.3)') (zs(ii),ii=1,6)
+      write(06,'(x,6i7)') (ii,ii=1,5)
+      write(06,'(x,6f7.3)') (zs(ii),ii=1,5)
       sl=0.005
       dels=1.0
       zs(1)=-1.0e-04
@@ -2140,6 +2140,10 @@ c
       read(15,*) bd,sandfc,siltfc,clayfc ! ######### soil properties
       read(15,*) eta                     ! ######### initial soil moisture
       read(15,*) temps                    ! ######### initial soil temperature
+
+      write(*,*) eta
+      write(*,*) temps
+
 
       adum=sandfc*alog(1.025)+siltfc*alog(.026)+clayfc*alog(.001)
       bdum=(sandfc*(alog(1.025))**2+siltfc*(alog(.026))**2+clayfc*(alog(

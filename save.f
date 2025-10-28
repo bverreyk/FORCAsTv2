@@ -16,6 +16,7 @@ c
 c Set up output files for RACM species concentrations
 c file names are fort.1xx where xx is species #
 c
+      write(317,'(x,"Time",10x,"Level",2x,411(i10,3x))') (i, i=1,nspec)
       write(318,'(x,"Time",10x,"Level",2x,411(i10,3x))') (i, i=1,nspec)
       write(319,'(x,"Time",10x,"Level",2x,51(i10,3x))')
      & (i, i=1,nrect_j)               ! photolysis reaction rates
@@ -126,8 +127,24 @@ c ###########################################################
       double precision extf,facte
       double precision heats,evaps
       integer jtot1
+
+      double precision flxvcp(nspec), flxkh, d
+
       jtot1=levcpy-levhtr+1
-      do lev = 1, nlev
+      ! bv add calculation of fluxes at each level here
+      write(317,991) tstamp,z(lev),(0.0, i=1,nspec)
+      write(318,991) tstamp,z(lev),(vcp(lev, i), i=1,nspec)
+      write(319,993) tstamp,z(lev),(photout(i, lev), i=1,nrect_j)
+      write(320,992) tstamp,z(lev),(rrat_updated(lev,i), i=1,nreact)
+      write(321,991) tstamp,z(lev),(depn(lev,i), i=1,nspec)
+      write(322,994) tstamp,z(lev),(chemr8_updated(lev,i), i=1,nvar)
+      do lev = 2, nlev
+        d = z(lev)-z(lev-1)
+        flxkh = 0.5*(akh(lev-1)+akh(lev))
+        do i = 1, nspec
+          flxvcp(i) = flxkh/d*(vcp(lev,i)-vcp(lev-1,i))
+        enddo
+        write(317,991) tstamp,z(lev),(flxvcp(i), i=1,nspec)
         write(318,991) tstamp,z(lev),(vcp(lev, i), i=1,nspec)
         write(319,993) tstamp,z(lev),(photout(i, lev), i=1,nrect_j)
         write(320,992) tstamp,z(lev),(rrat_updated(lev,i), i=1,nreact)
