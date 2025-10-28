@@ -17,7 +17,7 @@ c Wind profile (roughly based on Baldocchi, 1988)
       DOUBLE PRECISION    ZROUGH
       INTEGER             LEVCPY,      LEVHTR
 
-      parameter (nlev=40,nsoil=15)    ! number of levels  
+      parameter (nlev=40,nsoil=5)    ! number of levels  
       dimension wind(nlev)
       REAL(KIND=dp) :: Z, ZF, DZ, DZF
       common/height/z(nlev),zf(nlev),dz(nlev),dzf(nlev)

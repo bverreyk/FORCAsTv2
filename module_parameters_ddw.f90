@@ -4,7 +4,7 @@
 !         integer,parameter :: nspec=82 ! The number of species 
          integer,parameter :: nrect_j=51 ! The number of photolysis reactions 
          integer,parameter :: nlev=40       ! number of levels
-         integer,parameter :: nsoil=15      ! number of levels
+         integer,parameter :: nsoil=5      ! number of levels
          INTEGER, PARAMETER :: naers12=18 
          INTEGER, PARAMETER :: ncondensable=99 
 !         logical,parameter :: lprin = .False.

@@ -705,7 +705,7 @@ C
       INTEGER             IPRECP
       !shc end adding declarations to allow "implicit none"
 
-      parameter (nlev=40,nsoil=15)    ! number of levels  
+      parameter (nlev=40,nsoil=5)    ! number of levels  
       common/misc2/fr(99),ct(99),totlai,df(99)
      &,clai(99),distls(10),itot,itotp1,jtot
       common/misc4/z(99),zmid(99),jzcpy,jzcpy1,jzsfc,jzsfm1,jzbot,jzcrit

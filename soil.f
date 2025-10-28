@@ -305,7 +305,7 @@ c     liquid water content (eta) in the soil
       REAL    DELTIM,      TIMLOC
       INTEGER             ICUMDY,      IYEAR,       JDAY,        MONTH
       !shc end of adding declarations to allow "implicit none"
-      parameter (nsoil=15)
+      parameter (nsoil=5)
       save
       common/soil1/ zs(nsoil),sl,dels
       common/konst/p0,aaa,bbb,ccc,ddd,ak,r0,r1,grav,cp,xl,tconv
@@ -635,7 +635,7 @@ c      solve tridiagonal system to calculate new values (soil)
       implicit none !shc
       !shc The following declarations are added so I can use "implicit none"
       INTEGER             NSOIL
-      parameter(nsoil=15) !shc moved down from higher up
+      parameter(nsoil=5) !shc moved down from higher up
       DOUBLE PRECISION    A,           AB,          AT
       DOUBLE PRECISION    B,           BB,          BT
       DOUBLE PRECISION    C,           D,           DB,          DT
