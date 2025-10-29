@@ -38,8 +38,8 @@ c First cache_met.out
 c  
       write(41,971) 'Time','Level','PAR','Tair','U','Kh',
      &   'HeatFlux','Patm','rhoair','RH','Theta'
-      write(41,971) 's','m','W m-2','K','m s-1','m2 s-1',
-     &   'K m s-1','Pa','kg m-3','%','K'
+      write(41,971) 's','m','Wm-2','K','ms-1','m2s-1',
+     &   'Kms-1','Pa','kgm-3','%','K'
 c
 c then cache_misc.out
 c 
@@ -56,12 +56,12 @@ c
      &'Rstom2','Rstom3','Rstom4','Rstom5','Rstom6','Rstom7','Rstom8',
      &'Rstom9','Rstom10','frarea1','frarea2','frarea3','frarea4',
      &'frarea5','frarea6','frarea7','frarea8','frarea9','frarea10',
-     &'PAR Extinction','Sens. heat flux','Lat. heat flux'
+     &'PAR_Extinction','Sens._heat_flux','Lat._heat_flux'
       write(51,975) 's','m','K','K','K','K','K','K','K','K','K','K',
-     &'umol-1 m2 s','umol-1 m2 s','umol-1 m2 s','umol-1 m2 s',
-     &'umol-1 m2 s','umol-1 m2 s','umol-1 m2 s','umol-1 m2 s',
-     &'umol-1 m2 s','umol-1 m2 s','-','-','-','-','-','-','-','-','-',
-     &'-','-','K m s-1','K m s-1'
+     &'umol-1m2s','umol-1m2 s','umol-1m2s','umol-1m2s',
+     &'umol-1m2s','umol-1m2 s','umol-1m2s','umol-1m2s',
+     &'umol-1m2s','umol-1m2 s','-','-','-','-','-','-','-','-','-',
+     &'-','-','Kms-1','Kms-1'
 
   500 format(1x, 60(:f12.2))
   971 format(x,a10,12(x,a10))
@@ -142,7 +142,7 @@ c ###########################################################
         d = z(lev)-z(lev-1)
         flxkh = 0.5*(akh(lev-1)+akh(lev))
         do i = 1, nspec
-          flxvcp(i) = flxkh/d*(vcp(lev,i)-vcp(lev-1,i))
+          flxvcp(i) = flxkh/d*(vcp(lev-1,i)-vcp(lev,i))
         enddo
         write(317,991) tstamp,z(lev),(flxvcp(i), i=1,nspec)
         write(318,991) tstamp,z(lev),(vcp(lev, i), i=1,nspec)
