@@ -1574,11 +1574,12 @@ c ##############################################################
       open(unit=318,file='out/conc.out',status='unknown')        !ddw - chemical concentration
       open(unit=319,file='out/photo.out',status='unknown')       !ddw - photolysis rates
       open(unit=320,file='out/rrat.out',status='unknown')        !ddw - reaction rates
-      open(unit=321,file='out/depn.out',status='unknown')        !ddw - reaction rates
-      open(unit=322, file='out/gprd.out',status='unknown')
+      open(unit=321,file='out/depn.out',status='unknown')        ! bv - deposition velocities?
+      open(unit=322,file='out/gprd.out',status='unknown')        ! bv - chemical production rate?
+      open(unit=323,file='out/emis.out',status='unknown')        ! bv - added emission rates
 
 !      open(unit=315,file='out/cacm_flux.out',status='unknown')   !ka - added canopy-top fluxes
-      open(unit=317,file='out/cacm_zmix.out',status='unknown')   !ka - added vertical transport
+!      open(unit=317,file='out/cacm_zmix.out',status='unknown')   !ka - added vertical transport
 !      open(unit=32, file='out/cacm_emis.out',status='unknown')
 !      open(unit=33, file='out/cacm_depn.out',status='unknown')
 !      open(unit=335,file='cacm_vdep.out',status='unknown')
@@ -1608,12 +1609,12 @@ c      open(unit=61,file='soil.out',status='unknown')
       !------------------------------!
       !      MPMPO output data       !
       !------------------------------!
-      open(unit=85,file='out/mpmpo_aer.out',status='unknown') !shc
-      open(unit=86,file='out/mpmpo_gas.out',status='unknown') !shc
-      open(unit=87,file='out/mpmpo_diff.out',status='unknown') !shc
-      open(unit=88,file='out/mpmpo_gamma_aq_r.out',status='unknown') !ddw
-      open(unit=89,file='out/mpmpo_gamma_aq_h.out',status='unknown') !ddw
-      open(unit=90,file='out/mpmpo_org.out',status='unknown') !ddw
+!      open(unit=85,file='out/mpmpo_aer.out',status='unknown') !shc
+!      open(unit=86,file='out/mpmpo_gas.out',status='unknown') !shc
+!      open(unit=87,file='out/mpmpo_diff.out',status='unknown') !shc
+!      open(unit=88,file='out/mpmpo_gamma_aq_r.out',status='unknown') !ddw
+!      open(unit=89,file='out/mpmpo_gamma_aq_h.out',status='unknown') !ddw
+!      open(unit=90,file='out/mpmpo_org.out',status='unknown') !ddw
 
 c ##############################################################
 c Read parameters from file inputn - modify to be site-specific
