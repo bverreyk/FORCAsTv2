@@ -832,7 +832,7 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
       !-----------------------------------------------------! 
       case(2)
       TL = 0.3*hcpy/CUSTARcpy
-      TAU = 4.*TL
+      TAU = 1.6*TL
       RFACTORcpy = ((1.-exp(-TAU/TL))*(TAU-TL)**(3./2.))/
      &     (TAU-TL+TL*exp(-TAU/TL))**(3./2.)
       do k = 1,levobscpy 
