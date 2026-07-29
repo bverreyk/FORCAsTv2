@@ -87,7 +87,7 @@ OBJS= cacm3_Precision.o \
       soa_main_mpmpo.o mpmpo_interface.o  
       
 
-EXE   = forcast_tau=1.6Tl.exe
+EXE   = forcast_31d.exe
 
 $(EXE):	$(OBJS)
 	$(FC) -o $@   $(OBJS)

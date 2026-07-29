@@ -1,0 +1,125 @@
+# ============================================================
+# FORCAsT v2 -- initial species concentration profiles
+# ============================================================
+# Format per line:
+#   SPECIES_INDEX  ZMIN  ZMAX  TYPE  PARAMS
+#
+# ZMIN, ZMAX [m] : profile entry is applied where ZMIN <= z < ZMAX
+#                  Use 0. and 9999. to cover all model levels.
+#
+# TYPE / PARAMS:
+#   CONST   c0                  -- c0 (mol/mol), uniform over z-range
+#   EXP     c0  scale           -- c0 * exp(-z * scale)
+#   LINEAR  c0  c1  cmax        -- c0 + c1*z, capped at cmax (cmax<=0 : no cap)
+#   RH      frac                -- frac * esat(T(z)) / p(z)   [H2O only]
+#
+# Species indices are defined in module_parameters_ddw.f90.
+# Entries are applied IN ORDER after the hardcoded init block in main.f,
+# so later entries override earlier ones for the same species/z-range.
+# Species not listed here keep their hardcoded defaults.
+#
+# NOTE: LH2SO4 (index 2) is initialised from a T- and P-dependent number
+#       density formula in main.f and cannot be expressed here. It is kept
+#       hardcoded. Similarly, the SOA surrogate species set via the
+#       sorg/mw_of_icacm loop are kept hardcoded.
+# ============================================================
+#
+# idx   zmin   zmax    type      c0            c1           cmax
+# ============================================================
+
+# --- Long-lived background gases ---
+# LCO2=1    : 395 ppmv, uniform
+  1     0.    9999.   CONST    3.95e-4
+
+# LCH4=135  : 1.76 ppmv, uniform
+135     0.    9999.   CONST    1.76e-6
+
+# LCO=373   : 100 ppbv, uniform
+373     0.    9999.   CONST    1.0e-7
+
+# --- Inorganic oxidants ---
+# LO3=401   : 42 ppbv at surface, +0.1 ppbv/m, capped at 60 ppbv
+401     0.    9999.   LINEAR   42.0e-9      0.10e-9      60.0e-9
+
+# LNO2=397  : piecewise profile (scale height = 1/0.001 = 1000 m)
+397     0.     20.    EXP      8.34e-10     0.001
+397    20.     34.    EXP      1.048e-9     0.001
+397    34.    300.    EXP      1.253e-9     0.001
+397   300.    600.    CONST    2.0e-10
+397   600.   1500.    CONST    1.0e-10
+397  1500.   9999.    CONST    5.0e-11
+
+# LNO=402   : 3 pptv at surface, slow decay (scale = 0.001)
+402     0.    9999.   EXP      3.0e-12      0.001
+
+# LNO3=400  : 2.1 pptv at surface, scale = 0.01
+400     0.    9999.   EXP      2.1e-12      0.01
+
+# LHONO=191 : 0.154 pptv at surface, scale = 0.01
+191     0.    9999.   EXP      1.542e-10    0.01
+
+# LHNO3=270 : 0.1 pptv at surface, scale = 0.01
+270     0.    9999.   EXP      1.0e-10      0.01
+
+# LH2O2=243 : 0.5 pptv at surface, very slow decay (scale = xx*xx = 0.0001)
+243     0.    9999.   EXP      5.0e-10      0.0001
+
+# LSO2=133  : 0.1 pptv at surface, scale = 0.01
+133     0.    9999.   EXP      1.0e-10      0.01
+
+# --- Isoprene oxidation products ---
+# LMACR=364 : MCR+MVK, 0.2 pptv at surface, scale = 0.01
+364     0.    9999.   EXP      2.0e-10      0.01
+
+# LMVK=275  : 0.5 pptv at surface, scale = 0.01
+275     0.    9999.   EXP      5.0e-10      0.01
+
+# LHCHO=383 : 5 ppbv at surface, scale = 0.01
+383     0.    9999.   EXP      5.0e-9       0.01
+
+# LALD1=384 : acetaldehyde, 0.39 ppbv at surface, scale = 0.01
+384     0.    9999.   EXP      3.9e-10      0.01
+
+# LMGLY=396 : methylglyoxal, 20 pptv at surface, scale = 0.01
+396     0.    9999.   EXP      2.0e-11      0.01
+
+# LKETL=363 : acetone, 2.5 ppbv at surface, very slow decay (scale = 0.0001)
+363     0.    9999.   EXP      2.5e-9       0.0001
+
+# --- Biogenic VOCs ---
+# LISOP=356 : isoprene, 0.2 ppbv at surface, scale = 0.01
+356     0.    9999.   EXP      2.0e-10      0.01
+
+# LAPIN=372 : alpha-pinene, 40 pptv at surface, scale = 0.01
+372     0.    9999.   EXP      4.0e-11      0.01
+
+# LBPIN=359 : beta-pinene, set to zero (hardcoded 0 in model since apr 2015)
+359     0.    9999.   CONST    0.0
+
+# LDLMN=368 : d-limonene, 40 pptv at surface, scale = 0.01
+368     0.    9999.   EXP      4.0e-11      0.01
+
+# LETHE=345 : ethylene, 2 pptv at surface, scale = 0.01
+345     0.    9999.   EXP      2.0e-12      0.01
+
+# --- Anthropogenic VOCs ---
+# LAROH=148 : AROH (toluene/xylene), 60 pptv at surface, scale = 0.01
+148     0.    9999.   EXP      6.0e-11      0.01
+
+# LAROL=156 : AROL (toluene/xylene), 20 pptv at surface, scale = 0.01
+156     0.    9999.   EXP      2.0e-11      0.01
+
+# LETOH=149 : ethanol, 0.15 ppbv at surface, scale = 0.01
+149     0.    9999.   EXP      1.5e-10      0.01
+
+# LALKM=203 : alkanes ~C8, 0.3 pptv at surface, scale = 0.01
+203     0.    9999.   EXP      3.0e-10      0.01
+
+# LPAN2301=144 : PAN, 1 ppbv at surface, scale = 0.01
+144     0.    9999.   EXP      1.0e-9       0.01
+
+# --- Water vapor ---
+# LH2O=410  : current hardcoded profile (mole fraction ~ 1.98% at surface)
+# To use 100% RH tied to the temperature profile instead, replace with:
+#   410   0.    9999.   RH    1.00
+410     0.    9999.   EXP      0.0198       0.01

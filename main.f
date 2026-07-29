@@ -343,7 +343,7 @@
       timloc=0.                          ! Local time in hours 
       tstart= timloc*3600.               ! Start time in seconds
 
-      hours = 48.0     
+      hours = 31.*24.0     
       deltim= 1.*60.                       ! Time step in seconds
       ntimes= 60.*60./deltim * hours     ! Number of time steps (48 hours)
 
@@ -832,7 +832,7 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
       !-----------------------------------------------------! 
       case(2)
       TL = 0.3*hcpy/CUSTARcpy
-      TAU = 1.6*TL
+      TAU = 4.*TL
       RFACTORcpy = ((1.-exp(-TAU/TL))*(TAU-TL)**(3./2.))/
      &     (TAU-TL+TL*exp(-TAU/TL))**(3./2.)
       do k = 1,levobscpy 
@@ -1561,6 +1561,13 @@ c ##############################################################
 !ka - added beta; end of added section
       dimension sterpin(3),sovocin(9)
 
+!bv read initial vcp fields
+      character*200 line96
+      character*10  ptype96
+      integer       ios96, ios96b, ic96
+      double precision zlo96, zhi96, c096, c196, c296
+
+
       pii=4.*atan(1.)      ! pi
       rgas=8.314
       decmax=sin(23.44*pid180)
@@ -2099,6 +2106,53 @@ c#############################################################
          phot1(50,lev)=2.32e-04        !ISOP1CO4N ISOP-POW
          phot1(51,lev)=2.24E-04        !ISOP3CO4N ISOP-POW
       enddo  ! end level loop
+
+c bv with help from claude.ai:
+c ---------------------------------------------------------------
+c Read species initial profiles from data/init_profiles.dat
+c File is optional; missing file leaves hardcoded values intact.
+c ---------------------------------------------------------------
+      open(96, file='data/init_profiles.dat',
+     &     status='old', iostat=ios96)
+      if (ios96 .eq. 0) then
+        do
+          read(96,'(A200)', iostat=ios96) line96
+          if (ios96 .ne. 0) exit
+          line96 = adjustl(line96)
+          if (len_trim(line96) .eq. 0) cycle
+          if (line96(1:1) .eq. '#') cycle
+          ic96 = index(line96, '#')
+          if (ic96 .gt. 0) line96 = line96(1:ic96-1)
+          c096=0.d0; c196=0.d0; c296=0.d0
+          read(line96,*,iostat=ios96b)
+     &      isp, zlo96, zhi96, ptype96, c096, c196, c296
+          if (ios96b .ne. 0) read(line96,*,iostat=ios96b)
+     &      isp, zlo96, zhi96, ptype96, c096, c196
+          if (ios96b .ne. 0) read(line96,*,iostat=ios96b)
+     &      isp, zlo96, zhi96, ptype96, c096
+          if (ios96b .ne. 0) cycle
+          if (isp .lt. 1 .or. isp .gt. nspec) cycle
+          do lev = 1, nlev
+            if (z(lev) .lt. zlo96 .or. z(lev) .ge. zhi96) cycle
+            select case (trim(ptype96))
+              case ('CONST')
+                vcp(lev, isp) = c096
+              case ('EXP')
+                vcp(lev, isp) = c096 * exp(-z(lev) * c196)
+              case ('LINEAR')
+                vcp(lev, isp) = c096 + c196 * z(lev)
+                if (c296 .gt. 0.d0 .and.
+     &              vcp(lev,isp) .gt. c296) vcp(lev,isp) = c296
+              case ('RH')
+                vcp(lev, isp) = c096 * 610.7d0
+     &            * exp(17.1536d0*(t(lev)-273.15d0)
+     &            / (t(lev)-38.33d0)) / p(lev)
+            end select
+          enddo
+        enddo
+        close(96)
+      endif
+
 c
 c Initialise leaf and soil temperature
 c 
