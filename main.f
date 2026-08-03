@@ -306,14 +306,15 @@
 
       integer ii
 
-
+      ! bwdv - include lw.dat to calculate ration
+      double precision avelw, esky
       ! bwdv add switches to test different components
       logical sw_newc,sw_advect,sw_sourcest,sw_sinks,sw_chem
-      sw_advect = .true.    ! Run the advect subroutine in sources.f?
-      sw_newc = .true.      ! Run the newc subroutine in transp.f? (Turbulent transport)
-      sw_sourcest = .True.  ! Run the sourcest subroutine in sources.f?
-      sw_sinks = .True.     ! Run the sinks subroutine in sources.f?
-      sw_chem = .True.      ! Updated vcp in main.f?
+      sw_advect = .True.   ! Run the advect subroutine in sources.f?
+      sw_newc = .True.      ! Run the newc subroutine in transp.f? (Turbulent transport)
+      sw_sourcest = .True. ! Run the sourcest subroutine in sources.f?
+      sw_sinks = .True.    ! Run the sinks subroutine in sources.f?
+      sw_chem = .True.     ! Updated vcp in main.f?
       do k=1,3
        fbeam(k)=0.
       enddo
@@ -343,7 +344,7 @@
       timloc=0.                          ! Local time in hours 
       tstart= timloc*3600.               ! Start time in seconds
 
-      hours = 31.*24.0     
+      hours = 1.*24.0     
       deltim= 1.*60.                       ! Time step in seconds
       ntimes= 60.*60./deltim * hours     ! Number of time steps (48 hours)
 
@@ -414,10 +415,15 @@
 ! Read PAR from fort.500 input file
 !
 !**********************************************************************************************************************!
-      if(inrad.eq.1) then
+      if(inrad.eq.1.or.inrad.eq.3) then
          dtl2=0.
          open(unit=500,file='./data/par.dat', status='unknown')
          read (500, *)   ! read header
+         timin=0.
+      endif
+      if(inrad.eq.2.or.inrad.eq.3) then
+         open(unit=501,file='./data/lw.dat',status='unknown')
+         read (501, *)   ! read header
          timin=0.
       endif
 
@@ -460,7 +466,7 @@
 !**********************************************************************************************************************!
 ! Read incoming radiation from external input file for calulating ratiod (cloud effect)
 !**********************************************************************************************************************!
-      if(inrad.eq.1) then
+      if(inrad.eq.1.or.inrad.eq.3) then
       if(l30) read (500, *) timin,averad !Read every half-hour
 
       potvis=0.
@@ -526,7 +532,18 @@ c Radiation for all layers and 10 angle classes
       ta=t(30)
       vpa=vp(30) 
 
-      call skyir(ta,vpa) 
+
+!**********************************************************************************************************************!
+c bwdv
+c Calculte ration by inverting the Brutsaert equation used in skyir (inrad 2 or 3)
+!**********************************************************************************************************************!
+      if(inrad.eq.2.or.inrad.eq.3) then
+      if(l30) read (501, *) timin,avelw ! Read every half-hour
+      esky = 1.24*(vpa/ta)**(1./7.)
+      ration = ((avelw/(5.67e-08*ta**4))-1)/(esky-1)
+      endif
+ 
+      call skyir(ta,vpa)
 
 !**********************************************************************************************************************!
 !
@@ -799,7 +816,7 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
 !**********************************************************************************************************************!
 !
 ! Advection
-! Modify this section to incorporate advection of energy (heat)
+! Modify this section to incorporate advection of energy (heat
 ! and mass (concentrations). For most sites this will be wind 
 ! direction dependent, and will predominantly consist of key
 ! anthropogenic pollutants (NOx, CO, SO2, O3, VOCs)
@@ -1561,7 +1578,7 @@ c ##############################################################
 !ka - added beta; end of added section
       dimension sterpin(3),sovocin(9)
 
-!bv read initial vcp fields
+!bwdv read initial vcp fields
       character*200 line96
       character*10  ptype96
       integer       ios96, ios96b, ic96
@@ -1641,7 +1658,7 @@ c ##############################################################
       read(15,*) vgday,vgn                       ! ##### geostrophic wind (day, night) 
       read(15,*) zrday,zrn,alphaday,alphan       ! ##### roughness height (day, night), wind profile parameters (day, night)
       read(15,*) itot,jmax,jmin,dfmin,clump,kmax 
-      read(15,*) inrad, iwpm2                    ! ##### read incoming solar radation (inrad=1), input is in W/m**2 (iwpm2=1) or micromoles per (m2 seconds) (iwpm2=0) 
+      read(15,*) inrad, iwpm2                    ! ##### read incoming radation (inrad 1:SW/PAR, 2:LW, 3:SW/PAR+LW), input for SW/PAR is in W/m**2 (iwpm2=1, SW) or micromoles per (m2 seconds) (iwpm2=0, PAR)
       read(15,*) ratiod,ration                   ! modifiers for incoming radiation (only important when incoming radiation is not read from file (i.e. inrad=0)
       read(15,*) emis,emisol
       read(15,*) (rsoil(m),m=1,kmax),(rleaf(m),m=1,kmax), !reflectivities, transmissions
@@ -2107,7 +2124,7 @@ c#############################################################
          phot1(51,lev)=2.24E-04        !ISOP3CO4N ISOP-POW
       enddo  ! end level loop
 
-c bv with help from claude.ai:
+c bwdv with help from claude.ai:
 c ---------------------------------------------------------------
 c Read species initial profiles from data/init_profiles.dat
 c File is optional; missing file leaves hardcoded values intact.
