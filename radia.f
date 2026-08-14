@@ -1115,6 +1115,7 @@ c**********************************************************
       INTEGER             JJ,          JJP1,        JL,          JM1
       INTEGER             K,           LAYSP1,      LAYSUB
       DOUBLE PRECISION    HCPY,        HTR,         TLAI,        ZROUGH
+      DOUBLE PRECISION    SIZELF
       INTEGER             LEVCPY,      LEVHTR
       DOUBLE PRECISION    FRDEG,       GAMRAT,      XMEU,        XNEU
       INTEGER             IANGOT,      KPNTSP
@@ -1156,7 +1157,7 @@ c above two statements were added by Chen, 8/31/89.
       common/misc2/fr(99),ct(99),totlai,df(99)
      &,clai(99),distls(10),itot,itotp1,jtot
       common/misc6/xint,xintz(99),nalpha,ispher,nxintz
-      common /cpy/ hcpy,htr,tlai,levcpy,levhtr,zrough
+      common /cpy/ hcpy,htr,tlai,levcpy,levhtr,zrough,sizelf
 c xintz, extin. coef. at different zenith averaged over azimuth, and
 c nxtintz, dimension of xintz, Chen, 05/25/89.
 c
