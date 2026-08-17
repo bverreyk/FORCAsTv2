@@ -344,7 +344,7 @@
       timloc=0.                          ! Local time in hours 
       tstart= timloc*3600.               ! Start time in seconds
 
-      hours = 1.*24.0     
+      hours =  2.*24.0     
       deltim= 1.*60.                       ! Time step in seconds
       ntimes= 60.*60./deltim * hours     ! Number of time steps (48 hours)
 
@@ -706,8 +706,9 @@ c       vg = vgn
        case (2)                
       
       ! lev35 is 1043 m; 18:00 the heat flux at the top of the canopy becomes negative 
-      levmxd = 29                     ! daytime; lev=29 is 215 m 
-      if(timloc.ge.18.) levmxd = 35    ! nighttime
+      ! bwdv: levmxd from inputn, do not overwrite here
+      !levmxd = 29                     ! daytime; lev=29 is 215 m 
+      !if(timloc.ge.18.) levmxd = 35    ! nighttime
 
       ! Read USTAR and SIGW every 30 min for in-canopy (bottom) anemometer
       if (l30) read(5082, *) timin, CUSTAR0
@@ -849,7 +850,7 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
       !-----------------------------------------------------! 
       case(2)
       TL = 0.3*hcpy/CUSTARcpy
-      TAU = 4.*TL
+      TAU = 6.*TL
       RFACTORcpy = ((1.-exp(-TAU/TL))*(TAU-TL)**(3./2.))/
      &     (TAU-TL+TL*exp(-TAU/TL))**(3./2.)
       do k = 1,levobscpy 
@@ -860,7 +861,7 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
       do k=levobscpy+1,levobstow
          CUSTAR = CUSTARcpy+DUSTARDZ*(Z(K)-zobscpy)
          TL = 0.3*hcpy/CUSTAR
-         TAU = 4.*TL
+         TAU = 6.*TL
          RFACTORtow = ((1.-exp(-TAU/TL))*(TAU-TL)**(3./2.))/
      &      (TAU-TL+TL*exp(-TAU/TL))**(3./2.)
          AKH(k) = AKH(k)*RFACTORtow
@@ -874,7 +875,7 @@ c      if(l30) read (5081, *) timin, CUSTAR1   !ddw custar1 was read before atk
       !-----------------------------------------------------! 
       case(1)
       TL = 0.3*hcpy/CUSTARtow 
-      TAU = 4.*TL
+      TAU = 6.*TL
       RFACTORtow = ((1.-exp(-TAU/TL))*(TAU-TL)**(3./2.))/
      &     (TAU-TL+TL*exp(-TAU/TL))**(3./2.)
       do k = 1,levobstow 
@@ -1970,6 +1971,8 @@ c pressure
        pres=1013.25*100.  ! Surface presssure, pascal
        p(lev)=pres*((1.0-z(lev)/44308.0)**(1.0/0.19023))
 c temperature
+! bwdv you can override this simple lapse rate parameterization using the
+! init_profiles.dat file and setting the species integer (isp) to 0.
 !shc   t(lev)=towT0-(z(lev)-29.)*lapse	!ka - ABL temperature profile based on initial temperature at 29m and lapse rate (from inputn) !shc Harvard Forest setup
        t(lev)=293.45-z(lev)*.0046 !shc for UMBS CABINEX, based on FORECaSTv1.0
 
@@ -2148,6 +2151,23 @@ c ---------------------------------------------------------------
           if (ios96b .ne. 0) read(line96,*,iostat=ios96b)
      &      isp, zlo96, zhi96, ptype96, c096
           if (ios96b .ne. 0) cycle
+          if (isp .eq. 0) then    ! isp=0 reserved: override temperature profile
+            do lev = 1, nlev
+              if (z(lev) .lt. zlo96 .or. z(lev) .ge. zhi96) cycle
+              select case (trim(ptype96))
+                case ('CONST')
+                  t(lev) = c096
+                case ('LINEAR')
+                  t(lev) = c096 + c196 * z(lev)
+                  if (c296 .gt. 0.d0 .and.
+     &                t(lev) .gt. c296) t(lev) = c296
+              end select
+              ! Keep dependent quantities consistent with the new t(lev)
+              theta(lev) = t(lev)*((100000.0/p(lev))**.286)
+              RHOAIR(lev) = P(lev)/287./T(lev)
+            enddo
+            cycle
+          endif
           if (isp .lt. 1 .or. isp .gt. nspec) cycle
           do lev = 1, nlev
             if (z(lev) .lt. zlo96 .or. z(lev) .ge. zhi96) cycle
